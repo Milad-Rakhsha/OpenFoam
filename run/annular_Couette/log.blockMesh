@@ -1,0 +1,102 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+Build  : 6-76a8284120c3
+Exec   : blockMesh
+Date   : May 07 2019
+Time   : 17:34:00
+Host   : "obama.me.wisc.edu"
+PID    : 19998
+I/O    : uncollated
+Case   : /home/milad/OpenFOAM/milad-6/run/annular_Couette
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Creating block mesh from
+    "/home/milad/OpenFOAM/milad-6/run/annular_Couette/system/blockMeshDict"
+Using #calcEntry at line 48 in file "/home/milad/OpenFOAM/milad-6/run/annular_Couette/system/blockMeshDict"
+Using #codeStream with "/home/milad/OpenFOAM/milad-6/run/annular_Couette/dynamicCode/platforms/linux64GccDPInt32Opt/lib/libcodeStream_6752d4529548d9a6c5fa7501215ed7ecc0894eb6.so"
+Creating new library in "dynamicCode/_6752d4529548d9a6c5fa7501215ed7ecc0894eb6/platforms/linux64GccDPInt32Opt/lib/libcodeStream_6752d4529548d9a6c5fa7501215ed7ecc0894eb6.so"
+Invoking "wmake -s libso /home/milad/OpenFOAM/milad-6/run/annular_Couette/dynamicCode/_6752d4529548d9a6c5fa7501215ed7ecc0894eb6"
+wmake libso /home/milad/OpenFOAM/milad-6/run/annular_Couette/dynamicCode/_6752d4529548d9a6c5fa7501215ed7ecc0894eb6
+    ln: ./lnInclude
+    wmkdep: codeStreamTemplate.C
+    Ctoo: codeStreamTemplate.C
+    ld: /home/milad/OpenFOAM/milad-6/run/annular_Couette/dynamicCode/_6752d4529548d9a6c5fa7501215ed7ecc0894eb6/../platforms/linux64GccDPInt32Opt/lib/libcodeStream_6752d4529548d9a6c5fa7501215ed7ecc0894eb6.so
+Using #calcEntry at line 48 in file "/home/milad/OpenFOAM/milad-6/run/annular_Couette/system/blockMeshDict"
+Using #calcEntry at line 49 in file "/home/milad/OpenFOAM/milad-6/run/annular_Couette/system/blockMeshDict"
+Using #codeStream with "/home/milad/OpenFOAM/milad-6/run/annular_Couette/dynamicCode/platforms/linux64GccDPInt32Opt/lib/libcodeStream_cb23cc7f422d6926fa95771cad6834babb1facc2.so"
+Creating new library in "dynamicCode/_cb23cc7f422d6926fa95771cad6834babb1facc2/platforms/linux64GccDPInt32Opt/lib/libcodeStream_cb23cc7f422d6926fa95771cad6834babb1facc2.so"
+Invoking "wmake -s libso /home/milad/OpenFOAM/milad-6/run/annular_Couette/dynamicCode/_cb23cc7f422d6926fa95771cad6834babb1facc2"
+wmake libso /home/milad/OpenFOAM/milad-6/run/annular_Couette/dynamicCode/_cb23cc7f422d6926fa95771cad6834babb1facc2
+    ln: ./lnInclude
+    wmkdep: codeStreamTemplate.C
+    Ctoo: codeStreamTemplate.C
+    ld: /home/milad/OpenFOAM/milad-6/run/annular_Couette/dynamicCode/_cb23cc7f422d6926fa95771cad6834babb1facc2/../platforms/linux64GccDPInt32Opt/lib/libcodeStream_cb23cc7f422d6926fa95771cad6834babb1facc2.so
+Using #calcEntry at line 49 in file "/home/milad/OpenFOAM/milad-6/run/annular_Couette/system/blockMeshDict"
+Using #calcEntry at line 50 in file "/home/milad/OpenFOAM/milad-6/run/annular_Couette/system/blockMeshDict"
+Using #calcEntry at line 50 in file "/home/milad/OpenFOAM/milad-6/run/annular_Couette/system/blockMeshDict"
+Using #calcEntry at line 51 in file "/home/milad/OpenFOAM/milad-6/run/annular_Couette/system/blockMeshDict"
+Using #calcEntry at line 51 in file "/home/milad/OpenFOAM/milad-6/run/annular_Couette/system/blockMeshDict"
+Creating block edges
+No non-planar block faces defined
+Creating topology blocks
+Creating topology patches
+
+Creating block mesh topology
+--> FOAM Warning : 
+    From function Foam::polyMesh::polyMesh(const Foam::IOobject&, const Foam::Xfer<Foam::Field<Foam::Vector<double> > >&, const cellShapeList&, const faceListList&, const wordList&, const Foam::PtrList<Foam::dictionary>&, const Foam::word&, const Foam::word&, bool)
+    in file meshes/polyMesh/polyMeshFromShapeMesh.C at line 871
+    Found 2 undefined faces in mesh; adding to default patch.
+
+Check topology
+
+	Basic statistics
+		Number of internal faces : 0
+		Number of boundary faces : 6
+		Number of defined boundary faces : 6
+		Number of undefined boundary faces : 0
+	Checking patch -> block consistency
+
+Creating block offsets
+Creating merge list .
+
+Creating polyMesh from blockMesh
+Creating patches
+Creating cells
+Creating points with scale 1
+    Block 0 cell size :
+        i : 0.000625 .. 0.000625
+        j : 0.00408346 .. 0.00408346
+        k : 0.001 .. 0.001
+
+
+Writing polyMesh
+----------------
+Mesh Information
+----------------
+  boundingBox: (0 0 0) (0.09 0.09 0.02)
+  nPoints: 22386
+  nCells: 20000
+  nFaces: 62300
+  nInternalFaces: 57700
+----------------
+Patches
+----------------
+  patch 0 (start: 57700 size: 500) name: inner_wall
+  patch 1 (start: 58200 size: 500) name: outer_wall
+  patch 2 (start: 58700 size: 1000) name: bottom
+  patch 3 (start: 59700 size: 1000) name: top
+  patch 4 (start: 60700 size: 1600) name: defaultFaces
+
+End
+
