@@ -16,21 +16,30 @@ FoamFile
 
 convertToMeters 1.0;
 R_in        0.065;
+R_s         0.085;
 R_out       0.090;
-H           0.020;
-
-
+H           0.040;
+N_1         20;
+N_2         5;
+N_H         20;
+N_r         50;
 vertices
 (
-    ($R_in 0  0)               //0
-    ($R_out 0 0)                //1
-    (0 $R_out 0)                //2
-    (0 $R_in  0)                //3
+    ($R_in 0  0)                //0
+    ($R_s 0 0)                  //1
+    ($R_out 0 0)                //2
 
-    ($R_in  0 $H)               //4
-    ($R_out 0 $H)                 //5
-    (0 $R_out $H)                 //6
-    (0 $R_in  $H)                //7
+    (0 $R_out 0)                //3
+    (0 $R_s  0)                 //4
+    (0 $R_in  0)                //5
+
+    ($R_in 0  $H)                //0
+    ($R_s 0 $H)                  //1
+    ($R_out 0 $H)                //2
+
+    (0 $R_out $H)                //3
+    (0 $R_s  $H)                 //4
+    (0 $R_in  $H)                //5
 
 
     (0.707107 0.707107 1)   //8
@@ -39,44 +48,46 @@ vertices
 
 blocks
 (
-    hex (0 1 2 3 4 5 6 7) (40 25 20) simpleGrading (1 1 1)
+    hex (0 1 4 5 6 7 10 11) ($N_1 $N_r $N_H) simpleGrading (1 1 1)
+    hex (1 2 3 4 7 8 9 10)  ($N_2 $N_r $N_H) simpleGrading (1 1 1)
+
+
 
 );
 
 edges
 (
-    arc 1 2 (#calc "$R_out*cos(3.1415/4)" #calc "$R_out*cos(3.1415/4)" 0)
-    arc 0 3 (#calc "$R_in*cos(3.1415/4)"  #calc "$R_in*cos(3.1415/4)"  0)
-    arc 5 6 (#calc "$R_out*cos(3.1415/4)" #calc "$R_out*cos(3.1415/4)" $H)
-    arc 4 7 (#calc "$R_in*cos(3.1415/4)"  #calc "$R_in*cos(3.1415/4)"  $H)
+    arc 0 5 (#calc "$R_in*cos(3.1415/4)"  #calc "$R_in*cos(3.1415/4)"  0)
+    arc 1 4 (#calc "$R_s*cos(3.1415/4)" #calc "$R_s*cos(3.1415/4)" 0)
+    arc 2 3 (#calc "$R_out*cos(3.1415/4)" #calc "$R_out*cos(3.1415/4)" 0)
+
+    arc 6 11 (#calc "$R_in*cos(3.1415/4)"  #calc "$R_in*cos(3.1415/4)"  $H)
+   arc 7 10 (#calc "$R_s*cos(3.1415/4)" #calc "$R_s*cos(3.1415/4)" $H)
+    arc 8 9  (#calc "$R_out*cos(3.1415/4)" #calc "$R_out*cos(3.1415/4)" $H)
+
 );
 
 boundary
 (
-    inner_wall
+    stator
     {
         type patch;
         faces
         (
-            (0 4 7 3)
+            (0 1 4 5)
+            (0 6 11 5)
+
         );
     }
 
-    outer_wall
+    rotor
     {
         type patch;
         faces
         (
-          (1 5 6 2)
-        );
-    }
+          (1 2 3 4)
+          (2 3 9 8)
 
-    bottom
-    {
-        type patch;
-        faces
-        (
-            (0 1 2 3 )
         );
     }
 
@@ -86,7 +97,8 @@ boundary
         type patch;
         faces
         (
-            (4 5 6 7)
+            (6 7 10 11)
+            (7 8 9 10)
 
         );
     }

@@ -20,12 +20,8 @@ internalField   uniform (0 0 0.0);
 
 boundaryField
 {
-    outer_wall
+    rotor
     {
-    //    type            fixedValue;
-    //    value           uniform (0 0 0);
-    //     type            zeroGradient;
-
         type rotatingWallVelocity;
         origin (0 0 0);
         axis (0 0 1);
@@ -34,27 +30,18 @@ boundaryField
 
     }
 
-    inner_wall
+    stator
     {
        type            fixedValue;
        value           uniform (0 0 0);
-        //type            zeroGradient;
     }
 
-    bottom
-    {
-        type rotatingWallVelocity;
-        origin (0 0 0);
-        axis (0 0 1);
-        omega 0.15; // Rotational speed in radians/sec
-        value uniform (0 0 0);
-    }
 
     top
     {
         type            zeroGradient;
-
     }
+
 }
 
 // ************************************************************************* //

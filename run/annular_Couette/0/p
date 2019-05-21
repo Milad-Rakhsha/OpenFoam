@@ -20,28 +20,29 @@ internalField   uniform 0.1;
 
 boundaryField
 {
-    outer_wall
+    rotor
     {
         type            zeroGradient;
+
     }
 
-    inner_wall
+    stator
     {
         type            zeroGradient;
+
     }
 
-
-    bottom
-    {
-        type            zeroGradient;
-    }
 
     top
     {
          type            fixedValue;
          value           uniform 0.0;
 
+
     }
+
+
+
 }
 
 // ************************************************************************* //
