@@ -22,99 +22,120 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::singlePhaseTransportModelGranular
+    Foam::viscosityModelsGranular::NGF
 
 Description
-    A simple single-phase transport model based on viscosityModel.
-
-    Used by the incompressible single-phase solvers like simpleFoam,
-    turbFoam etc.
+    An incompressible NGF non-Newtonian viscosity model.
 
 SourceFiles
-    singlePhaseTransportModelGranular.C
+    NGF.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef singlePhaseTransportModelGranular_H
-#define singlePhaseTransportModelGranular_H
+#ifndef NGF_H
+#define NGF_H
 
-#include "incompressible/transportModel/transportModel.H"
-#include "IOdictionary.H"
-#include "autoPtr.H"
+#include "viscosityModelsGranular/viscosityModelGranular/viscosityModelGranular.H"
+#include "dimensionedScalar.H"
+#include "volFields.H"
+#include "fvCFD.H"
+#include "fvOptions.H"
+#include "bound.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
-
-class viscosityModelGranular;
+namespace viscosityModelsGranular
+{
 
 /*---------------------------------------------------------------------------*\
-                Class singlePhaseTransportModelGranular Declaration
+                           Class NGF Declaration
 \*---------------------------------------------------------------------------*/
 
-class singlePhaseTransportModelGranular
+class NGF
 :
-    public IOdictionary,
-    public transportModel
+    public viscosityModelGranular
 {
-    // Private Data
+    // Private data
 
-        autoPtr<viscosityModelGranular> viscosityModelPtr_;
+        dictionary NGFCoeffs_;
+
+        dimensionedScalar diam_;
+        dimensionedScalar rho_s_;
+        dimensionedScalar I0_;
+        dimensionedScalar mu_s_;
+        dimensionedScalar mu_2_;
+        dimensionedScalar b_;
+
+        dimensionedScalar A_;
+        dimensionedScalar nu0_;
+
+        volScalarField nu_;
+        volScalarField g_;
 
 
     // Private Member Functions
 
-        //- Disallow copy construct
-        singlePhaseTransportModelGranular(const singlePhaseTransportModelGranular&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const singlePhaseTransportModelGranular&);
+        //- Calculate and return the laminar viscosity
+        tmp<volScalarField> calcNu() ;
+        tmp<volScalarField> calc_g() ;
 
 
 public:
 
     //- Runtime type information
-    TypeName("singlePhaseTransportModelGranular");
+    TypeName("NGF");
 
 
     // Constructors
 
         //- Construct from components
-        singlePhaseTransportModelGranular
+        NGF
         (
+            const word& name,
+            const dictionary& viscosityProperties,
             const volVectorField& U,
             const surfaceScalarField& phi,
-			const volScalarField& p
+            const volScalarField& p
 
         );
 
 
     //- Destructor
-    virtual ~singlePhaseTransportModelGranular();
+    virtual ~NGF()
+    {}
 
 
     // Member Functions
 
         //- Return the laminar viscosity
-        virtual tmp<volScalarField> nu() const;
-
-//        virtual tmp<volScalarField> strainRate() const;
-
+        virtual tmp<volScalarField> nu() const
+        {
+            return nu_;
+        }
 
         //- Return the laminar viscosity for patch
-        virtual tmp<scalarField> nu(const label patchi) const;
+        virtual tmp<scalarField> nu(const label patchi) const
+        {
+            return nu_.boundaryField()[patchi];
+        }
 
         //- Correct the laminar viscosity
-        virtual void correct();
+        virtual void correct()
+        {
+            nu_ = calcNu();
+
+        }
 
         //- Read transportProperties dictionary
-        virtual bool read();
+        virtual bool read(const dictionary& viscosityProperties);
 };
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+} // End namespace viscosityModelsGranular
 } // End namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

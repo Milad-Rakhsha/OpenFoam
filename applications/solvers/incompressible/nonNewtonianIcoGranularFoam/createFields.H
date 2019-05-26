@@ -49,6 +49,20 @@ volVectorField U
     mesh
 );
 
+Info<< "Reading field g\n" << endl;
+volScalarField g
+(
+    IOobject
+    (
+        "g",
+        runTime.timeName(),
+        mesh,
+        IOobject::MUST_READ,
+        IOobject::AUTO_WRITE
+    ),
+	mesh
+);
+
 Info<< "Reading field StrainRate\n" << endl;
 volScalarField StrainRate
 (
@@ -72,11 +86,27 @@ volScalarField nu_fluid
         "nu_fluid",
         runTime.timeName(),
         mesh,
-        IOobject::MUST_READ,
+        IOobject::NO_READ,
         IOobject::AUTO_WRITE
     ),
 	mesh
 	);
+
+
+
+Info<< "Reading field taw\n" << endl;
+volScalarField taw
+(
+    IOobject
+    (
+        "taw",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+	mesh
+);
 
 #include "createPhi.H"
 singlePhaseTransportModelGranular fluid(U, phi, p);

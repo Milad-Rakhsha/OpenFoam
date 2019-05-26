@@ -1,4 +1,4 @@
-/*--------------------------------*- C++ -*----------------------------------*\
+                                                             /*--------------------------------*- C++ -*----------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
@@ -9,37 +9,32 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volVectorField;
-    object      U;
+    class       volScalarField;
+    object      g;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 1 -1 0 0 0 0];
+dimensions      [0 0 -1 0 0 0 0];
 
-internalField   uniform (0 0 0);
+internalField   uniform 0.01;
 
 boundaryField
 {
-    rotor
+       rotor
     {
-        type rotatingWallVelocity;
-        origin (0 0 0);
-        axis (0 0 1);
-        omega 0.15; // Rotational speed in radians/sec
-        value uniform (0 0 0);
-
+        type            zeroGradient;
     }
 
     stator
     {
-       type            fixedValue;
-       value           uniform (0 0 0);
-    }
+        type            zeroGradient;
 
+    }
 
     top
     {
         type            zeroGradient;
+
     }
 
     right
@@ -48,7 +43,7 @@ boundaryField
     }
     left
     {
-        type              cyclic; //symmetry;
+        type                cyclic; //symmetry;
     }
 }
 

@@ -46,6 +46,8 @@ Foam::viscosityModelGranular::viscosityModelGranular
     const surfaceScalarField& phi,
     const volScalarField& p
 
+
+
 )
 :
     name_(name),

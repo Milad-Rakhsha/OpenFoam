@@ -15,11 +15,11 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-transportModel  Jop;
+transportModel  NGF;
 
 JopCoeffs
 {
-    par_diameter         [0 1 0 0 0 0 0]  0.01;
+    par_diameter         [0 1 0 0 0 0 0]  0.0003;
     par_density          [0 0 0 0 0 0 0]  8.;
     par_friction         [0 0 0 0 0 0 0]   0.2;
     par_mu2              [0 0 0 0 0 0 0]   0.65;
@@ -27,9 +27,21 @@ JopCoeffs
     nu_max               [0 2 -1 0 0 0 0]  1.0;
     regularization       [0 0 -1 0 0 0 0]  0.0;
     K                    [0 0 0 0 0 0 0]  5000;
-
-
 }
+
+
+NGFCoeffs
+{
+    par_diameter         [0 1 0 0 0 0 0]  0.0003;
+    par_density          [0 0 0 0 0 0 0]  2.450;
+    par_friction         [0 0 0 0 0 0 0]   0.3819;
+    b                    [0 0 0 0 0 0 0]   0.9377;
+    par_mu2              [0 0 0 0 0 0 0]   0.65;
+    I0                   [0 0 0 0 0 0 0]   0.1;
+    A                    [0 0 0 0 0 0 0]  0.001;
+    nu_0                 [0 2 -1 0 0 0 0]  1.0;
+}
+
 
 nu         [0 2 -1 0 0 0 0]  1e-2;
 source      (0.0  0.0  -9.8);

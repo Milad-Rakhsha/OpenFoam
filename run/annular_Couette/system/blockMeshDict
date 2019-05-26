@@ -18,10 +18,10 @@ convertToMeters 1.0;
 R_in        0.065;
 R_s         0.085;
 R_out       0.090;
-H           0.040;
+H           0.050;
 N_1         20;
 N_2         5;
-N_H         20;
+N_H         50;
 N_r         50;
 vertices
 (

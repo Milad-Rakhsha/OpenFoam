@@ -42,6 +42,7 @@ Foam::singlePhaseTransportModelGranular::singlePhaseTransportModelGranular
     const volVectorField& U,
     const surfaceScalarField& phi,
 	const volScalarField& p
+
 )
 :
     IOdictionary
@@ -55,7 +56,7 @@ Foam::singlePhaseTransportModelGranular::singlePhaseTransportModelGranular
             IOobject::NO_WRITE
         )
     ),
-    viscosityModelPtr_(viscosityModelGranular::New("nu", *this, U, phi, p))
+    viscosityModelPtr_(viscosityModelGranular::New("nu", *this, U, phi, p ))
 {}
 
 

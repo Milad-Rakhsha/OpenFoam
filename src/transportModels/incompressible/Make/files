@@ -1,6 +1,7 @@
 viscosityModelsGranular/viscosityModelGranular/viscosityModelGranular.C
 viscosityModelsGranular/viscosityModelGranular/viscosityModelGranularNew.C
 viscosityModelsGranular/Jop/Jop.C
+viscosityModelsGranular/NGF/NGF.C
 
 singlePhaseTransportModelGranular/singlePhaseTransportModelGranular.C
 

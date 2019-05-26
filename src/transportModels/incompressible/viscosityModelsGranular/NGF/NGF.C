@@ -23,9 +23,8 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "Jop.H"
-
 #include "addToRunTimeSelectionTable.H"
+#include "NGF.H"
 #include "surfaceFields.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -34,11 +33,11 @@ namespace Foam
 {
 namespace viscosityModelsGranular
 {
-    defineTypeNameAndDebug(Jop, 0);
+    defineTypeNameAndDebug(NGF, 0);
     addToRunTimeSelectionTable
     (
     	viscosityModelGranular,
-        Jop,
+		NGF,
         dictionary
     );
 }
@@ -48,75 +47,49 @@ namespace viscosityModelsGranular
 // * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * * //
 
 Foam::tmp<Foam::volScalarField>
-Foam::viscosityModelsGranular::Jop::calcNu() const
+Foam::viscosityModelsGranular::NGF::calc_g()
 {
 
-
 	volScalarField  P_P ( max ( p_ , dimensionedScalar ("pSmall", dimLength*dimLength/dimTime/dimTime, 1e-25)) );
-	volScalarField  I ( strainRate() * diam_ / pow( P_P / rho_s_, 0.5 ));
-	volScalarField  mu ( mu_s_+(mu_2_-mu_s_)*I / (I0_+ I) );
+	volScalarField  I ( max ( strainRate() * diam_ / Foam::sqrt( P_P / rho_s_ ), 1e-20));
+//	volScalarField  mu ( mu_s_+(mu_2_-mu_s_)*I / (I0_+ I) );
+	volScalarField  mu ( mu_s_ + b_ * I  );
 
-//	volScalarField mu (
-//						IOobject
-//			            (
-//			            	"nu_fluid",
-//			                U_.time().timeName(),
-//			                U_.db(),
-//			                IOobject::NO_READ,
-//			                IOobject::NO_WRITE
-//			            ),
-//			            U_.mesh(),
-//						dimensionedScalar ("nu_small", dimless, 1e-2)
-//
-//	);
+	volScalarField  zeta (
+							A_ / Foam::sqrt(Foam::mag(mu-mu_s_)) * diam_
+						  );
 
-		//    return  tmp<volScalarField> (mu *P_P/sr);
+	volScalarField g_loc ( strainRate()/mu );
 
-//	volScalarField nu_max (
-//						IOobject
-//			            (
-//			            	"nu_max",
-//			                U_.time().timeName(),
-//			                U_.db(),
-//			                IOobject::NO_READ,
-//			                IOobject::NO_WRITE
-//			            ),
-//			            U_.mesh(),
-//						nu0_
-//	);
+    tmp<fvScalarMatrix> gEqn
+					(
+							zeta*zeta*fvm::laplacian(g_)  == fvm::Sp(1.0 , g_)-g_loc
+					);
 
-//	dimensionedScalar sr_small("vSmall", dimless/dimTime, 1e-6);
-	volScalarField sr (max(strainRate(),reg_));
-//	dimensionedScalar sr_small("vSmall", dimViscosity, 1e-6);
+    //	const Foam::fvMesh& mesh = U_.mesh();
+    //    fv::options& fvOptions(fv::options::New(mesh));
+    //	 fvOptions.constrain(gEqn.ref());
+    //	 gEqn.ref().relax();
+    solve(gEqn);
+    //	 fvOptions.correct(g_);
 
-//	volScalarField k (max(nu_max- mu_s_*P_P /sr_small,nu_max*0));
+    return tmp<volScalarField> (g_);
 
 
-//	return tmp<volScalarField> ((mu* P_P) / sr);
+}
 
-//	return tmp<volScalarField> (
-//									min
-//									(
-//										nu_max,  //For very small shear rate we need a high nu value
-//										(mu_s_* P_P) / sr
-//
-//									)
-//								);
-
-
-    dimensionedScalar tone("tone", dimTime, 1.0);
-    dimensionedScalar rtone("rtone", dimless/dimTime, 1.0);
-//	dimensionedScalar mu_plastic("mp", dimViscosity, mu_s_.value());
-//	return tmp<volScalarField> ( mu_s_* P_P / rtone  + mu_s_* P_P / sr *(1-exp(-sr*tone*K)));
-//	return tmp<volScalarField> ( mu* P_P / sr +  mu* P_P / sr * (1-exp(-sr*tone*K)) );
-    return tmp<volScalarField> ( mu* P_P / sr  );
+Foam::tmp<Foam::volScalarField>
+Foam::viscosityModelsGranular::NGF::calcNu()
+{
+	volScalarField  P_P ( max ( p_ , dimensionedScalar ("pSmall", dimLength*dimLength/dimTime/dimTime, 1e-25)) );
+    return tmp<volScalarField> ( 2*P_P/NGF::calc_g()() );
 }
 
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::viscosityModelsGranular::Jop::Jop
+Foam::viscosityModelsGranular::NGF::NGF
 (
         const word& name,
         const dictionary& viscosityProperties,
@@ -126,18 +99,19 @@ Foam::viscosityModelsGranular::Jop::Jop
 
 ):
 	viscosityModelGranular(name, viscosityProperties, U, phi, p),
-    JopCoeffs_
+	NGFCoeffs_
     (
         viscosityProperties.optionalSubDict(typeName + "Coeffs")
     ),
-	diam_("par_diameter", dimLength, JopCoeffs_),
-	rho_s_("par_density", dimless, JopCoeffs_),
-	I0_("I0", dimless, JopCoeffs_),
-	mu_s_("par_friction", dimless, JopCoeffs_),
-	mu_2_("par_mu2", dimless, JopCoeffs_),
-	reg_("regularization", dimless/dimTime, JopCoeffs_),
-    nu0_("nu_max", dimViscosity, JopCoeffs_),
-    K("K", dimless, JopCoeffs_),
+	diam_("par_diameter", dimLength, NGFCoeffs_),
+	rho_s_("par_density", dimless, NGFCoeffs_),
+	I0_("I0", dimless, NGFCoeffs_),
+	mu_s_("par_friction", dimless, NGFCoeffs_),
+	mu_2_("par_mu2", dimless, NGFCoeffs_),
+	b_("b", dimless, NGFCoeffs_),
+	A_("A", dimless, NGFCoeffs_),
+    nu0_("nu_0", dimViscosity, NGFCoeffs_),
+
     nu_
     (
         IOobject
@@ -146,47 +120,63 @@ Foam::viscosityModelsGranular::Jop::Jop
             U_.time().timeName(),
             U_.db(),
             IOobject::NO_READ,
-            IOobject::NO_WRITE
+            IOobject::AUTO_WRITE
         ),
         U_.mesh(),
         nu0_
-    )
+    ),
+
+	g_
+	(
+		IOobject
+		(
+			"g",
+            U_.time().timeName(),
+            U_.db(),
+			IOobject::MUST_READ,
+			IOobject::AUTO_WRITE
+		),
+        U_.mesh()
+	)
+
 
 {
 
-	Info << "created Constitutive equation based on Jop et al." << endl;
+	Info << "created Constitutive equation based on Non-local Granular Fluidity" << endl;
 	Info << "particle diameter: " << diam_ << endl;
 	Info << "particle density: " << rho_s_ << endl;
+	Info << "I0: " << I0_ << endl;
 	Info << "particle friction: " << mu_s_ << endl;
 	Info << "particle mu2: " << mu_2_ << endl;
-	Info << "particle regularization: " << reg_ << endl;
-	Info << "I0: " << I0_ << endl;
 	Info << "nu: " << nu0_ << endl;
-	Info << "K: " << K << endl;
+	Info << "b:" << b_ << endl;
+	Info << "A:" << A_ << endl;
+
 
 }
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-bool Foam::viscosityModelsGranular::Jop::read
+bool Foam::viscosityModelsGranular::NGF::read
 (
     const dictionary& viscosityProperties
 )
 {
 	viscosityModelGranular::read(viscosityProperties);
 
-    JopCoeffs_ =
+	NGFCoeffs_ =
         viscosityProperties.optionalSubDict(typeName + "Coeffs");
 
     Info <<  "reading from " << typeName << "Coeffs" << endl;
-    JopCoeffs_.lookup("par_diameter") >> diam_;
-    JopCoeffs_.lookup("par_density") >> rho_s_;
-    JopCoeffs_.lookup("I0") >> I0_;
-    JopCoeffs_.lookup("par_friction") >> mu_s_;
-    JopCoeffs_.lookup("par_mu2") >> mu_2_;
-    JopCoeffs_.lookup("regularization") >> reg_;
-    JopCoeffs_.lookup("nu_max") >> nu0_;
-    JopCoeffs_.lookup("K") >> K;
+    NGFCoeffs_.lookup("par_diameter") >> diam_;
+    NGFCoeffs_.lookup("par_density") >> rho_s_;
+    NGFCoeffs_.lookup("I0") >> I0_;
+    NGFCoeffs_.lookup("par_friction") >> mu_s_;
+    NGFCoeffs_.lookup("par_mu2") >> mu_2_;
+    NGFCoeffs_.lookup("b") >> b_;
+    NGFCoeffs_.lookup("A") >> A_;
+    NGFCoeffs_.lookup("nu_0") >> nu0_;
+
 
 
     return true;

@@ -129,8 +129,9 @@ int main(int argc, char *argv[])
 
         fluid.correct();
         StrainRate=std::sqrt(2.0)*mag(symm(fvc::grad(U))) ;//fluid.strainRate();
+        taw=StrainRate*nu_fluid;
         nu_fluid=fluid.nu();
-
+        g=2*p/nu_fluid;
         runTime.write();
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"

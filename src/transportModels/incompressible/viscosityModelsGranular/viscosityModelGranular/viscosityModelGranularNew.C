@@ -37,6 +37,7 @@ Foam::autoPtr<Foam::viscosityModelGranular> Foam::viscosityModelGranular::New
     const surfaceScalarField& phi,
     const volScalarField& p
 
+
 )
 {
     const word modelType(viscosityProperties.lookup("transportModel"));
