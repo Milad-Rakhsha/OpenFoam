@@ -1,0 +1,15 @@
+components
+{
+    // Mandatory entries (unmodifiable)
+    type            components;
+    libs            ("libfieldFunctionObjects.so");
+
+    // Mandatory (inherited) entry (runtime modifiable)
+    field           U;
+
+    // Optional (inherited) entries
+    region          region0;
+    enabled         true;
+    log             true;
+    writeControl    writeTime;
+}

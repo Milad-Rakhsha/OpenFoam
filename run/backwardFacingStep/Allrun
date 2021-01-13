@@ -1,0 +1,32 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # Run from this directory
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+# Copy motorbike surface from resources directory
+cp $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz constant/triSurface/
+runApplication surfaceFeatures
+
+runApplication blockMesh
+# runApplication decomposePar -copyZero
+runApplication snappyHexMesh -overwrite
+cp 0.org/* 0/
+
+runApplication patchSummary
+runApplication potentialFoam
+runApplication $(getApplication)
+
+
+simpleFoam -postProcess -func wallShearStress > log.wallShearStress
+postProcess -fields "(p U)" -func streamLines > log.streamLines
+postProcess -func components > log.components
+postProcess -fields "(p U)" -func pressureDifferencePatch -latestTime > log.pressureDifferencePatch
+cat log.pressureDifferencePatch
+
+
+
+# runApplication reconstructParMesh -constant
+# runApplication reconstructPar -latestTime
+
+#------------------------------------------------------------------------------
