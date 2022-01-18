@@ -44,21 +44,39 @@ Foam::autoPtr<Foam::viscosityModelGranular> Foam::viscosityModelGranular::New
 
     Info<< "Selecting incompressible transport model " << modelType << endl;
 
-    dictionaryConstructorTable::iterator cstrIter =
-        dictionaryConstructorTablePtr_->find(modelType);
+//    dictionaryConstructorTable::iterator cstrIter =
+//        dictionaryConstructorTablePtr_->find(modelType);
+//
+//    if (cstrIter == dictionaryConstructorTablePtr_->end())
+//    {
+//        FatalErrorInFunction
+//            << "Unknown viscosityModel type "
+//            << modelType << nl << nl
+//            << "Valid viscosityModels are : " << endl
+//            << dictionaryConstructorTablePtr_->sortedToc()
+//            << exit(FatalError);
+//    }
+//
+//    return autoPtr<viscosityModelGranular>
+//        (cstrIter()(name, viscosityProperties, U, phi,p));
 
-    if (cstrIter == dictionaryConstructorTablePtr_->end())
+
+    auto* ctorPtr = dictionaryConstructorTable(modelType);
+
+    if (!ctorPtr)
     {
-        FatalErrorInFunction
-            << "Unknown viscosityModel type "
-            << modelType << nl << nl
-            << "Valid viscosityModels are : " << endl
-            << dictionaryConstructorTablePtr_->sortedToc()
-            << exit(FatalError);
+        FatalIOErrorInLookup
+        (
+        	viscosityProperties,
+            "viscosityModelGranular",
+            modelType,
+            *dictionaryConstructorTablePtr_
+        ) << exit(FatalIOError);
     }
 
-    return autoPtr<viscosityModelGranular>
-        (cstrIter()(name, viscosityProperties, U, phi,p));
+    return autoPtr<viscosityModelGranular>(ctorPtr(name, viscosityProperties, U, phi, p));
+
+
 }
 
 

@@ -1,6 +1,6 @@
 EXE_INC = \
     -I$(WM_PROJECT_DIR)/src/transportModels/incompressible/singlePhaseTransportModel \
-    -I$(WM_PROJECT_USER_DIR)/src/transportModels/incompressible/singlePhaseTransportModelGranular \
+    -I$../../../../../src/transportModels/incompressible/singlePhaseTransportModelGranular \
     -I$(LIB_SRC)/transportModels \
     -I$(LIB_SRC)/TurbulenceModels/turbulenceModels/lnInclude \
     -I$(LIB_SRC)/TurbulenceModels/incompressible/lnInclude \
